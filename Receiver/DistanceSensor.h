@@ -2,13 +2,12 @@
 #define DISTANCESENSOR_H
 
 #include <NewPing.h>
-#include "DFRobotDFPlayerMini.h"
+#include "AudioPlayer.h"
 
 class DistanceSensor {
 private:
     NewPing* sonar;
-    DFRobotDFPlayerMini* dfPlayer;
-    HardwareSerial* serial;
+    AudioPlayer* audioPlayer;
 
     bool isPlaying;
     unsigned long lastCheck;
