@@ -160,6 +160,10 @@ void setup()
   if (!distanceSensor.begin()) {
     Serial.println("Error initializing distance sensor");
     // Continue anyway - don't block the main functionality
+  } else {
+    // Test the audio system once during startup
+    Serial.println("Running audio test...");
+    distanceSensor.testAudio();
   }
 
   // Init ESP-NOW
