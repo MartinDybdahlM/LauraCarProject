@@ -173,8 +173,13 @@ void setup()
 
  
 void loop() {
-
+      //Check Signal lost.
+    unsigned long now = millis();
+    if ( now - lastRecvTime > SIGNAL_TIMEOUT ) 
+    {
+      rotateMotor(0, 0);
+    }
   }
   
-
-
+   
+ 
