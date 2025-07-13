@@ -1,14 +1,11 @@
 #include "DistanceSensor.h"
 
-DistanceSensor::DistanceSensor(int trig, int echo, int dfRx, int dfTx, int maxDist) {
+DistanceSensor::DistanceSensor(int trig, int echo, int maxDist) {
     trigPin = trig;
     echoPin = echo;
-    dfRxPin = dfRx;
-    dfTxPin = dfTx;
     maxDistance = maxDist;
 
     sonar = new NewPing(trigPin, echoPin, maxDistance);
-    audioPlayer = new AudioPlayer(dfRxPin, dfTxPin);
 
     isPlaying = false;
     lastCheck = 0;
@@ -17,12 +14,6 @@ DistanceSensor::DistanceSensor(int trig, int echo, int dfRx, int dfTx, int maxDi
 
 bool DistanceSensor::begin() {
     Serial.println("Initializing DistanceSensor...");
-
-    if (!audioPlayer->begin()) {
-        Serial.println("Error initializing AudioPlayer");
-        return false;
-    }
-
     Serial.println("DistanceSensor successfully initialized!");
     return true;
 }
@@ -43,14 +34,11 @@ void DistanceSensor::update() {
                 Serial.print("PROXIMITY ALERT! Distance: ");
                 Serial.print(distance);
                 Serial.println(" cm");
-
-                audioPlayer->playSirenSound();
                 isPlaying = true;
             }
         } else {
             if (isPlaying) {
                 Serial.println("Distance > 20cm, stopping audio");
-                audioPlayer->stop();
             }
             isPlaying = false;
         }
@@ -59,4 +47,8 @@ void DistanceSensor::update() {
 
 int DistanceSensor::getDistance() {
     return sonar->ping_cm();
+}
+
+bool DistanceSensor::isProximityAlert() {
+    return isPlaying;
 }

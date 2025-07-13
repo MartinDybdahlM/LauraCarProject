@@ -13,8 +13,8 @@ LedRing speedRing(12);
 #define DF_TX 25   // ESP32 sends here → DFPlayer RX
 #define MAX_DIST 400
 
-DistanceSensor distanceSensor(TRIG_PIN, ECHO_PIN, DF_RX, DF_TX, MAX_DIST);
-AudioPlayer startupAudio(DF_RX, DF_TX); // Separate audio player for startup sound
+DistanceSensor distanceSensor(TRIG_PIN, ECHO_PIN, MAX_DIST);
+AudioPlayer audioPlayer(DF_RX, DF_TX); // Single audio player for all sounds
 
 uint8_t receiverMacAddress[] = {0xF8, 0xB3, 0xB7, 0x47, 0xF8, 0x7C};
 
@@ -158,22 +158,18 @@ void setup()
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
 
-  // Initialize startup audio player
-  Serial.println("Initializing startup audio...");
-  if (startupAudio.begin()) {
-    startupAudio.setVolume(25); // Set volume for startup audio
+  // Initialize audio player
+  Serial.println("Initializing audio player...");
+  if (audioPlayer.begin()) {
+    audioPlayer.setVolume(25);
     Serial.println("Playing startup sound...");
-    startupAudio.playStartingSound();
+    audioPlayer.playStartingSound();
   }
 
   // Initialize distance sensor
   if (!distanceSensor.begin()) {
     Serial.println("Error initializing distance sensor");
     // Continue anyway - don't block the main functionality
-  } else {
-    // Set volume for distance sensor audio (proximity alerts)
-    // Note: We need to access the internal audio player through a method
-    Serial.println("Setting volume for proximity alerts...");
   }
 
   // Init ESP-NOW
@@ -210,6 +206,20 @@ void setup()
 void loop() {
   // Update distance sensor for proximity detection
   distanceSensor.update();
+
+  // Handle proximity alerts with audio
+  static bool wasProximityAlert = false;
+  bool isProximityAlert = distanceSensor.isProximityAlert();
+
+  if (isProximityAlert && !wasProximityAlert) {
+    // Start playing siren sound when proximity alert begins
+    audioPlayer.playSirenSound();
+  } else if (!isProximityAlert && wasProximityAlert) {
+    // Stop playing siren sound when proximity alert ends
+    audioPlayer.stop();
+  }
+
+  wasProximityAlert = isProximityAlert;
 
   //Check Signal lost.
   unsigned long now = millis();
