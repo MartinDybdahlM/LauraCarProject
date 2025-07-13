@@ -8,6 +8,11 @@
 // REPLACE WITH YOUR RECEIVER MAC Address
 uint8_t receiverMacAddress[] = {0xf8, 0xb3, 0xb7, 0x47, 0xdf, 0x24};
 
+// NOTE:
+// Upload this code to the transmitter ESP32 board (The joystick)!
+//
+
+
 struct PacketData
 {
   byte xAxisValue;

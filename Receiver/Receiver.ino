@@ -6,6 +6,10 @@ LedRing speedRing(12);
 uint8_t receiverMacAddress[] = {0xF8, 0xB3, 0xB7, 0x47, 0xF8, 0x7C};
 
 
+// NOTE:
+// Upload this code to the receiver ESP32 board (The car)!
+//
+
 //Right motor
 int enableRightMotor=22; 
 int rightMotorPin1=16;
