@@ -1,7 +1,18 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include "LedRing.h"
+#include "DistanceSensor.h"
+
 LedRing speedRing(12);
+
+// Distance sensor pins
+#define TRIG_PIN 33
+#define ECHO_PIN 14
+#define DF_RX 26   // ESP32 receives here → DFPlayer TX
+#define DF_TX 25   // ESP32 sends here → DFPlayer RX
+#define MAX_DIST 400
+
+DistanceSensor distanceSensor(TRIG_PIN, ECHO_PIN, DF_RX, DF_TX, MAX_DIST);
 
 uint8_t receiverMacAddress[] = {0xF8, 0xB3, 0xB7, 0x47, 0xF8, 0x7C};
 
@@ -145,6 +156,12 @@ void setup()
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
 
+  // Initialize distance sensor
+  if (!distanceSensor.begin()) {
+    Serial.println("Error initializing distance sensor");
+    // Continue anyway - don't block the main functionality
+  }
+
   // Init ESP-NOW
   if (esp_now_init() != ESP_OK) 
   {
@@ -177,13 +194,13 @@ void setup()
 
  
 void loop() {
-      //Check Signal lost.
-    unsigned long now = millis();
-    if ( now - lastRecvTime > SIGNAL_TIMEOUT ) 
-    {
-      rotateMotor(0, 0);
-    }
+  // Update distance sensor for proximity detection
+  distanceSensor.update();
+
+  //Check Signal lost.
+  unsigned long now = millis();
+  if ( now - lastRecvTime > SIGNAL_TIMEOUT )
+  {
+    rotateMotor(0, 0);
   }
-  
-   
- 
+}
