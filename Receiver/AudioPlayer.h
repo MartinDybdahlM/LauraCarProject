@@ -18,7 +18,6 @@ public:
 
     bool begin();
     void setVolume(int volume);
-    int getFileCount();
 
     // Specific sound methods
     void playStartingSound();
@@ -28,12 +27,6 @@ public:
 
     // Generic play method
     void playFile(int fileNumber);
-
-    // Test functionality
-    void runTest();
-
-    // Check if player is available for commands
-    bool isAvailable();
 };
 
 #endif

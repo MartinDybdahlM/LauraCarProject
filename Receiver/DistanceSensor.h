@@ -24,8 +24,6 @@ public:
     bool begin();
     void update();
     int getDistance();
-    void setVolume(int volume);
-    void testAudio(); // Add test function
 };
 
 #endif

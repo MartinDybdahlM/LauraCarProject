@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include "LedRing.h"
 #include "DistanceSensor.h"
+#include "AudioPlayer.h"
 
 LedRing speedRing(12);
 
@@ -13,6 +14,7 @@ LedRing speedRing(12);
 #define MAX_DIST 400
 
 DistanceSensor distanceSensor(TRIG_PIN, ECHO_PIN, DF_RX, DF_TX, MAX_DIST);
+AudioPlayer startupAudio(DF_RX, DF_TX); // Separate audio player for startup sound
 
 uint8_t receiverMacAddress[] = {0xF8, 0xB3, 0xB7, 0x47, 0xF8, 0x7C};
 
@@ -156,14 +158,22 @@ void setup()
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
 
+  // Initialize startup audio player
+  Serial.println("Initializing startup audio...");
+  if (startupAudio.begin()) {
+    startupAudio.setVolume(25); // Set volume for startup audio
+    Serial.println("Playing startup sound...");
+    startupAudio.playStartingSound();
+  }
+
   // Initialize distance sensor
   if (!distanceSensor.begin()) {
     Serial.println("Error initializing distance sensor");
     // Continue anyway - don't block the main functionality
   } else {
-    // Test the audio system once during startup
-    Serial.println("Running audio test...");
-    distanceSensor.testAudio();
+    // Set volume for distance sensor audio (proximity alerts)
+    // Note: We need to access the internal audio player through a method
+    Serial.println("Setting volume for proximity alerts...");
   }
 
   // Init ESP-NOW

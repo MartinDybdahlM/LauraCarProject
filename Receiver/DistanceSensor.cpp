@@ -60,11 +60,3 @@ void DistanceSensor::update() {
 int DistanceSensor::getDistance() {
     return sonar->ping_cm();
 }
-
-void DistanceSensor::setVolume(int volume) {
-    audioPlayer->setVolume(volume);
-}
-
-void DistanceSensor::testAudio() {
-    audioPlayer->runTest();
-}

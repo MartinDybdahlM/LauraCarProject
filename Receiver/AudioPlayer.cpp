@@ -47,18 +47,6 @@ void AudioPlayer::setVolume(int volume) {
     }
 }
 
-int AudioPlayer::getFileCount() {
-    if (isInitialized) {
-        delay(100);
-        int fileCount = dfPlayer->readFileCounts();
-        Serial.print("Files found on SD card: ");
-        Serial.println(fileCount);
-        return fileCount;
-    }
-    return 0;
-}
-
-
 void AudioPlayer::playStartingSound() {
     if (isInitialized) {
         Serial.println("Playing starting sound...");
@@ -93,52 +81,4 @@ void AudioPlayer::playFile(int fileNumber) {
         Serial.println(fileNumber);
         dfPlayer->play(fileNumber);
     }
-}
-
-void AudioPlayer::runTest() {
-    if (!isInitialized) {
-        Serial.println("AudioPlayer not initialized!");
-        return;
-    }
-
-    Serial.println("=== AudioPlayer Test ===");
-
-    // Test volume setting
-    Serial.println("Setting volume to 30...");
-    setVolume(30);
-    delay(100);
-
-    // Test file count
-    int fileCount = getFileCount();
-
-    if (fileCount > 0) {
-        Serial.println("Testing starting sound...");
-        playStartingSound();
-        delay(3000);
-
-        if (fileCount >= 2) {
-            Serial.println("Testing siren sound...");
-            playSirenSound();
-            delay(3000);
-
-            if (fileCount >= 3) {
-                Serial.println("Testing drifting sound...");
-                playDriftingSound();
-                delay(3000);
-            }
-        }
-        stop();
-    } else {
-        Serial.println("No audio files found on SD card!");
-        Serial.println("Make sure you have audio files named 0001.mp3, 0002.mp3, etc. on the SD card");
-    }
-
-    Serial.println("=== Test Complete ===");
-}
-
-bool AudioPlayer::isAvailable() {
-    if (isInitialized) {
-        return dfPlayer->available();
-    }
-    return false;
 }
