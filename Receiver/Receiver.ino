@@ -49,7 +49,7 @@ int lastLeftMotorSpeed = 0;
 // Drifting detection variables
 #define DRIFT_SPEED_THRESHOLD 50    // Minimum speed to trigger drift sound
 #define DRIFT_STEERING_THRESHOLD 10  // Minimum steering angle to trigger drift sound
-#define DRIFT_COOLDOWN 2000         // Cooldown between drift sounds (ms)
+#define DRIFT_COOLDOWN 10000         // Cooldown between drift sounds (ms)
 unsigned long lastDriftTime = 0;
 bool isDrifting = false;
 
