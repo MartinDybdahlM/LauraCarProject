@@ -74,7 +74,7 @@ void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingDat
   memcpy(&receiverData, incomingData, sizeof(receiverData));
   String inputData ;
   inputData = inputData + "values " + receiverData.xAxisValue + "  " + receiverData.yAxisValue + "  " + receiverData.switchPressed;
-  Serial.println(inputData);
+  //Serial.println(inputData);
   
   throttleAndSteeringMovements();
   

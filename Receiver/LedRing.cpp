@@ -34,6 +34,9 @@ void LedRing::update() {
   ring.clear();
   int ledsOn = map(speedValue, 0, 255, 0, NUM_LEDS);
 
+  Serial.print("Speed Value: ");
+  Serial.println(speedValue);
+
   // Ensure at maximum speed we show all LEDs
   if (speedValue == 255) {
     ledsOn = NUM_LEDS;
