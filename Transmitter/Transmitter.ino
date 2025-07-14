@@ -27,17 +27,34 @@ PacketData data;
 //So we need to add some deadband to center value. in our case 1800-2200. Any value in this deadband range is mapped to center 127.
 int mapAndAdjustJoystickDeadBandValues(int value, bool reverse)
 {
-  if (value >= 2200)
+  // Increased deadband for smoother control
+  const int CENTER_MIN = 1700;  // Expanded from 1800
+  const int CENTER_MAX = 2300;  // Expanded from 2200
+  const int CENTER_VALUE = 127;
+
+  if (value >= CENTER_MAX)
   {
-    value = map(value, 2200, 4095, 127, 254);
+    // Apply exponential curve for smoother response
+    int mappedValue = map(value, CENTER_MAX, 4095, CENTER_VALUE, 254);
+    // Apply exponential scaling for less sensitivity near center
+    float normalized = (float)(mappedValue - CENTER_VALUE) / (254 - CENTER_VALUE);
+    normalized = normalized * normalized; // Square for exponential curve
+    mappedValue = CENTER_VALUE + (int)(normalized * (254 - CENTER_VALUE));
+    value = mappedValue;
   }
-  else if (value <= 1800)
+  else if (value <= CENTER_MIN)
   {
-    value = map(value, 1800, 0, 127, 0);  
+    // Apply exponential curve for smoother response
+    int mappedValue = map(value, CENTER_MIN, 0, CENTER_VALUE, 0);
+    // Apply exponential scaling for less sensitivity near center
+    float normalized = (float)(CENTER_VALUE - mappedValue) / CENTER_VALUE;
+    normalized = normalized * normalized; // Square for exponential curve
+    mappedValue = CENTER_VALUE - (int)(normalized * CENTER_VALUE);
+    value = mappedValue;
   }
   else
   {
-    value = 127;
+    value = CENTER_VALUE;
   }
 
   if (reverse)

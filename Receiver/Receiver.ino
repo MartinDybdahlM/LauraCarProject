@@ -34,6 +34,18 @@ int leftMotorPin2=19;
 
 #define MAX_MOTOR_SPEED 230
 
+// Smoothing and sensitivity constants
+#define SMOOTHING_FACTOR 0.3  // Lower = smoother, higher = more responsive
+#define STEERING_SENSITIVITY 0.6  // Reduce steering sensitivity (0.5 = half sensitivity)
+#define MIN_THROTTLE_THRESHOLD 15  // Minimum throttle to start moving
+#define MIN_STEERING_THRESHOLD 10  // Minimum steering input to register
+
+// Smoothing variables
+float smoothedThrottle = 0;
+float smoothedSteering = 0;
+int lastRightMotorSpeed = 0;
+int lastLeftMotorSpeed = 0;
+
 const int PWMFreq = 1000; /* 1 KHz */
 const int PWMResolution = 8;
 
@@ -80,9 +92,24 @@ void throttleAndSteeringMovements()
     motorDirection = -1;    
   }
 
+  // Exponential smoothing for throttle and steering
+  smoothedThrottle = (SMOOTHING_FACTOR * throttle) + ((1 - SMOOTHING_FACTOR) * smoothedThrottle);
+  smoothedSteering = (SMOOTHING_FACTOR * steering) + ((1 - SMOOTHING_FACTOR) * smoothedSteering);
+
+  // Apply steering sensitivity reduction
+  smoothedSteering *= STEERING_SENSITIVITY;
+
+  // Deadband to prevent small fluctuations from causing movement
+  if (abs(smoothedThrottle) < MIN_THROTTLE_THRESHOLD) {
+    smoothedThrottle = 0;
+  }
+  if (abs(smoothedSteering) < MIN_STEERING_THRESHOLD) {
+    smoothedSteering = 0;
+  }
+
   int rightMotorSpeed, leftMotorSpeed;
-  rightMotorSpeed =  abs(throttle) - steering;
-  leftMotorSpeed =  abs(throttle) + steering;
+  rightMotorSpeed =  abs(smoothedThrottle) - smoothedSteering;
+  leftMotorSpeed =  abs(smoothedThrottle) + smoothedSteering;
   rightMotorSpeed = constrain(rightMotorSpeed, 0, 255);
   leftMotorSpeed = constrain(leftMotorSpeed, 0, 255);
 
