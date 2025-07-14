@@ -68,10 +68,3 @@ void AudioPlayer::playDriftingSound() {
     }
 }
 
-void AudioPlayer::playFile(int fileNumber) {
-    if (isInitialized) {
-        Serial.print("Playing file: ");
-        Serial.println(fileNumber);
-        dfPlayer->play(fileNumber);
-    }
-}

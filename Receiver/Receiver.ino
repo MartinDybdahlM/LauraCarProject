@@ -47,8 +47,8 @@ int lastRightMotorSpeed = 0;
 int lastLeftMotorSpeed = 0;
 
 // Drifting detection variables
-#define DRIFT_SPEED_THRESHOLD 150    // Minimum speed to trigger drift sound
-#define DRIFT_STEERING_THRESHOLD 60  // Minimum steering angle to trigger drift sound
+#define DRIFT_SPEED_THRESHOLD 50    // Minimum speed to trigger drift sound
+#define DRIFT_STEERING_THRESHOLD 10  // Minimum steering angle to trigger drift sound
 #define DRIFT_COOLDOWN 2000         // Cooldown between drift sounds (ms)
 unsigned long lastDriftTime = 0;
 bool isDrifting = false;
@@ -210,7 +210,6 @@ void setup()
   // Initialize audio player
   Serial.println("Initializing audio player...");
   if (audioPlayer.begin()) {
-    audioPlayer.setVolume(25);
     Serial.println("Playing startup sound...");
     audioPlayer.playStartingSound();
   }

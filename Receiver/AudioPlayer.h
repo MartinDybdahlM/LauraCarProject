@@ -23,9 +23,6 @@ public:
     void playStartingSound();
     void playSirenSound();
     void playDriftingSound();
-
-    // Generic play method
-    void playFile(int fileNumber);
 };
 
 #endif
