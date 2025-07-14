@@ -213,11 +213,9 @@ void loop() {
 
   if (isProximityAlert && !wasProximityAlert) {
     // Start playing siren sound when proximity alert begins
+    Serial.println("Reciever should play siren sound");
     audioPlayer.playSirenSound();
-  } else if (!isProximityAlert && wasProximityAlert) {
-    // Stop playing siren sound when proximity alert ends
-    audioPlayer.stop();
-  }
+  } 
 
   wasProximityAlert = isProximityAlert;
 

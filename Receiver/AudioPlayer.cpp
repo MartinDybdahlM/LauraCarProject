@@ -68,13 +68,6 @@ void AudioPlayer::playDriftingSound() {
     }
 }
 
-void AudioPlayer::stop() {
-    if (isInitialized) {
-        Serial.println("Stopping audio playback...");
-        dfPlayer->stop();
-    }
-}
-
 void AudioPlayer::playFile(int fileNumber) {
     if (isInitialized) {
         Serial.print("Playing file: ");

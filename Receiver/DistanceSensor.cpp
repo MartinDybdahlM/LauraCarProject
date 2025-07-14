@@ -25,11 +25,17 @@ void DistanceSensor::update() {
         unsigned int distance = sonar->ping_cm();
 
         // Add distance reading to serial output for debugging
-        Serial.print("Distance: ");
-        Serial.print(distance);
-        Serial.println(" cm");
-
-        if (distance > 0 && distance < 20) {
+        //Serial.print("Distance: ");
+        //Serial.print(distance);
+        //Serial.println(" cm");
+ 
+        if (distance < 0) { 
+            Serial.print ("Distance under 0! Distance: ");
+            Serial.print(distance);
+            Serial.println(" cm");
+            
+        }
+        if (distance < 20) {
             if (!isPlaying) {
                 Serial.print("PROXIMITY ALERT! Distance: ");
                 Serial.print(distance);
@@ -37,10 +43,12 @@ void DistanceSensor::update() {
                 isPlaying = true;
             }
         } else {
-            if (isPlaying) {
+           if (isPlaying){
                 Serial.println("Distance > 20cm, stopping audio");
-            }
-            isPlaying = false;
+                isPlaying = false;
+           }
+
+           
         }
     }
 }
