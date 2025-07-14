@@ -34,9 +34,6 @@ void LedRing::update() {
   ring.clear();
   int ledsOn = map(speedValue, 0, 254, 0, NUM_LEDS);
 
-  Serial.print("Speed Value: ");
-  Serial.println(speedValue);
-
   for (int i = 0; i < ledsOn; i++) {
     ring.setPixelColor(i, rainbowColors[i]);
   }
