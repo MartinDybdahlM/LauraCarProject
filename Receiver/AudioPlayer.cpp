@@ -22,10 +22,6 @@ bool AudioPlayer::begin() {
     Serial.println("Starting AudioPlayer...");
     if (!dfPlayer->begin(*serial)) {
         Serial.println("AudioPlayer could not be started.");
-        Serial.println("Check:");
-        Serial.println("1. Wiring connections");
-        Serial.println("2. SD card is inserted");
-        Serial.println("3. Audio files exist on SD card");
         return false;
     }
 

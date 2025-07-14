@@ -70,9 +70,9 @@ PacketData receiverData;
 void rotateMotor(int rightMotorSpeed, int leftMotorSpeed);
 void simpleMovements();
 void throttleAndSteeringMovements();
+void checkAndPlayDriftSound(int avgSpeed);
 
-// callback function that will be executed when data is received
-void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingData, int len) 
+void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingData, int len)
 {
   if (len == 0)
   {
@@ -125,19 +125,7 @@ void throttleAndSteeringMovements()
   int avgSpeed = (abs(leftMotorSpeed) + abs(rightMotorSpeed)) / 2;
 
   // Check for drifting conditions
-  unsigned long currentTime = millis();
-  bool shouldDrift = (avgSpeed > DRIFT_SPEED_THRESHOLD) &&
-                     (abs(smoothedSteering) > DRIFT_STEERING_THRESHOLD) &&
-                     (currentTime - lastDriftTime > DRIFT_COOLDOWN);
-
-  if (shouldDrift && !isDrifting) {
-    Serial.println("Drift detected! Playing drifting sound...");
-    audioPlayer.playDriftingSound();
-    lastDriftTime = currentTime;
-    isDrifting = true;
-  } else if (!shouldDrift && isDrifting) {
-    isDrifting = false;
-  }
+  checkAndPlayDriftSound(avgSpeed);
 
   speedRing.setSpeed(avgSpeed);
   speedRing.update();
@@ -272,5 +260,21 @@ void loop() {
   if ( now - lastRecvTime > SIGNAL_TIMEOUT )
   {
     rotateMotor(0, 0);
+  }
+}
+
+void checkAndPlayDriftSound(int avgSpeed) {
+  unsigned long currentTime = millis();
+  bool shouldDrift = (avgSpeed > DRIFT_SPEED_THRESHOLD) &&
+                     (abs(smoothedSteering) > DRIFT_STEERING_THRESHOLD) &&
+                     (currentTime - lastDriftTime > DRIFT_COOLDOWN);
+
+  if (shouldDrift && !isDrifting) {
+    Serial.println("Drift detected! Playing drifting sound...");
+    audioPlayer.playDriftingSound();
+    lastDriftTime = currentTime;
+    isDrifting = true;
+  } else if (!shouldDrift && isDrifting) {
+    isDrifting = false;
   }
 }
