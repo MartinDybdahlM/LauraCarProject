@@ -46,6 +46,13 @@ float smoothedSteering = 0;
 int lastRightMotorSpeed = 0;
 int lastLeftMotorSpeed = 0;
 
+// Drifting detection variables
+#define DRIFT_SPEED_THRESHOLD 150    // Minimum speed to trigger drift sound
+#define DRIFT_STEERING_THRESHOLD 60  // Minimum steering angle to trigger drift sound
+#define DRIFT_COOLDOWN 2000         // Cooldown between drift sounds (ms)
+unsigned long lastDriftTime = 0;
+bool isDrifting = false;
+
 const int PWMFreq = 1000; /* 1 KHz */
 const int PWMResolution = 8;
 
@@ -116,6 +123,21 @@ void throttleAndSteeringMovements()
   rotateMotor(rightMotorSpeed * motorDirection, leftMotorSpeed * motorDirection);
 
   int avgSpeed = (abs(leftMotorSpeed) + abs(rightMotorSpeed)) / 2;
+
+  // Check for drifting conditions
+  unsigned long currentTime = millis();
+  bool shouldDrift = (avgSpeed > DRIFT_SPEED_THRESHOLD) &&
+                     (abs(smoothedSteering) > DRIFT_STEERING_THRESHOLD) &&
+                     (currentTime - lastDriftTime > DRIFT_COOLDOWN);
+
+  if (shouldDrift && !isDrifting) {
+    Serial.println("Drift detected! Playing drifting sound...");
+    audioPlayer.playDriftingSound();
+    lastDriftTime = currentTime;
+    isDrifting = true;
+  } else if (!shouldDrift && isDrifting) {
+    isDrifting = false;
+  }
 
   speedRing.setSpeed(avgSpeed);
   speedRing.update();
