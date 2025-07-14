@@ -2,19 +2,20 @@
 
 #define NUM_LEDS 12
 
+// Predefined rainbow colors for each LED position - evenly spaced across spectrum
 uint32_t rainbowColors[NUM_LEDS] = {
   0xFF0000,  // Red
-  0xFF4500,  // Orange Red
-  0xFF8C00,  // Dark Orange
-  0xFFD700,  // Gold
-  0xFFFF00,  // Yellow
-  0x9AFF9A,  // Light Green
-  0x00FF00,  // Green
-  0x00FF7F,  // Spring Green
-  0x00FFFF,  // Cyan
-  0x0080FF,  // Sky Blue
-  0x0000FF,  // Blue
-  0x8A2BE2   // Blue Violet
+  0xFF3300,  // Red-Orange
+  0xFF6600,  // Orange
+  0xFF9900,  // Yellow-Orange
+  0xFFCC00,  // Golden Yellow
+  0xFFFF00,  // Pure Yellow
+  0x99FF00,  // Yellow-Green
+  0x33FF00,  // Lime Green
+  0x00FF33,  // Green
+  0x00FF99,  // Cyan-Green
+  0x0099FF,  // Sky Blue
+  0x3300FF   // Blue-Purple
 };
 
 LedRing::LedRing(int pin) : ring(NUM_LEDS, pin, NEO_GRB + NEO_KHZ800) {
@@ -27,7 +28,7 @@ void LedRing::begin() {
 }
 
 void LedRing::setSpeed(int speed) {
-  speedValue = constrain(speed, 0, 255);
+  speedValue = constrain(speed, 0, 254);
 }
 
 void LedRing::update() {
